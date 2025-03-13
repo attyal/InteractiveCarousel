@@ -1,5 +1,3 @@
-// script.js
-
 const carousel = document.querySelector(".carousel");
 
 carousel.addEventListener("mouseover", (event) => {
