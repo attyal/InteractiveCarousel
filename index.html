@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Carousel with Navigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-bg: linear-gradient(135deg, #19447B, #228B22);
+            --card-bg: #ffffff;
+            --button-bg: #228B22; /* Changed button color to #228B22 */
+            --button-hover-bg: #1a6f1a; /* Adjusted hover color for darker shade */
+            --shadow: rgba(0, 0, 0, 0.2);
+            --hover-glow: rgba(255, 255, 255, 0.5); /* Soft white glow */
+            --font-family: 'Poppins', sans-serif; /* Modern font */
+            --card-border-radius: 10px; /* Slightly smaller border radius */
+            --card-padding: 10px; /* Reduced padding */
+            --card-height: 200px; /* Smaller card height */
+            --card-width: 150px; /* Smaller card width */
+            --transition-speed: 0.3s; /* Consistent transition speed */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--main-bg);
+            color: #333; /* Default text color */
+            padding: 20px; /* Add padding to body */
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            perspective: 1500px;
+            width: 90%; /* Adjust width for responsiveness */
+            max-width: 1200px; /* Limit max width */
+            height: 500px; /* Height for the container */
+            position: relative;
+            overflow: auto; /* Changed to auto to allow scrolling */
+            padding: 60px 0; /* Increased top and bottom padding */
+        }
+
+        /* Carousel Styles */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate 15s infinite linear;
+        }
+
+        .carousel-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            transition: transform var(--transition-speed);
+        }
+
+        /* Card Styles */
+        .carousel-card {
+            width: var(--card-width); /* Smaller width */
+            height: var(--card-height); /* Smaller height */
+            padding: var(--card-padding);
+            text-align: center;
+            background-color: var(--card-bg);
+            border-radius: var(--card-border-radius);
+            box-shadow: 0px 4px 10px var(--shadow);
+            transform: translateY(-50%);
+            transition: box-shadow var(--transition-speed), filter var(--transition-speed), transform var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 1;
+            margin: 20px; /* Added margin for spacing between cards */
+        }
+
+        .carousel-card img {
+            width: 100%;
+            border-radius: 10px;
+            transition: transform var(--transition-speed); /* Smooth image transition */
+        }
+
+        .carousel-card h3 {
+            margin: 10px 0;
+            font-size: 1em; /* Adjusted font size */
+        }
+
+        .carousel-card button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 8px 14px; /* Adjusted padding */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            font-size: 0.9em; /* Button font size */
+        }
+
+        .carousel-card button:hover {
+            background-color: var(--button-hover-bg);
+            transform: scale(1.05); /* Slightly scale button on hover */
+        }
+
+        /* Keyframes for rotation */
+        @keyframes rotate {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* Positioning Carousel Items */
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(400px); }
+        .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(400px); }
+        .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(400px); }
+        .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(400px); }
+        .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(400px); }
+
+        /* Hover effects for upward floating movement and soft white glow */
+        .carousel-card:hover {
+            transform: translateY(-15px); /* Move upward but not too high */
+            box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.3); /* Increased shadow */
+            filter: drop-shadow(0 0 10px var(--hover-glow)); /* Soft white glow effect */
+        }
+
+        /* Custom Scrollbar Styles */
+        .carousel-container::-webkit-scrollbar {
+            height: 6px; /* Thinner scrollbar */
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background-color: #228B22; /* Color of the scrollbar thumb */
+            border-radius: 3px; /* Rounded corners */
+        }
+
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1); /* Background for the scrollbar track */
+        }
+
+        /* Navigation Arrows */
+        .nav-arrows {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px; /* Increased from 20px to 50px to lower the buttons */
+        }
+
+        .arrow {
+            width: 30px; /* Circle width */
+            height: 30px; /* Circle height */
+            border-radius: 50%; /* Circle shape */
+            background-color: white; /* Circle color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 0 10px; /* Space between arrows */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+        }
+
+        .arrow img {
+            width: 15px; /* Arrow icon size */
+            height: 15px;
+        }
+
+        /* Hover effect for arrows */
+        .arrow:hover {
+            background-color: rgba(34, 139, 34, 0.7); /* Slightly darker on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-item">
+                <div class="carousel-card">
+                    <img src="rel.jpg" alt="Image 1">
+                    <h3>RELIEF FUNDS</h3>
+                    <button>View Projects</button> <!-- Changed button text -->
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-card">
+                    <img src="envi.jpg" alt="Image 2">
+                    <h3>ENVIRONMENT</h3>
+                    <button>View Projects</button> <!-- Changed button text -->
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-card">
+                    <img src="edu.jpg" alt="Image 3">
+                    <h3>EDUCATION</h3>
+                    <button>View Projects</button> <!-- Changed button text -->
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-card">
+                    <img src="entrep.jpg" alt="Dinosaur" />
+                    <h3>ENTREPRENEURS</h3>
+                    <button>View Projects</button> <!-- Changed button text -->
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-card">
+                    <img src="ren.jpg" alt="Image 5">
+                    <h3>RENOVATIONS</h3>
+                    <button>View Projects</button> <!-- Changed button text -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Arrows -->
+        <div class="nav-arrows">
+            <div class="arrow" id="prev-arrow">
+                <img src="leftt.png" alt="Left Arrow">
+            </div>
+            <div class="arrow" id="next-arrow">
+                <img src="right.png" alt="Right Arrow">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const carousel = document.querySelector('.carousel');
+        const prevArrow = document.getElementById('prev-arrow');
+        const nextArrow = document.getElementById('next-arrow');
+        const items = document.querySelectorAll('.carousel-item');
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            const totalItems = items.length;
+            const angle = -currentIndex * (360 / totalItems);
+            carousel.style.transform = `rotateY(${angle}deg)`;
+        }
+
+        // Event listeners for navigation arrows
+        prevArrow.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + items.length) % items.length; // Loop back to the end if going left
+            updateCarousel();
+        });
+
+        nextArrow.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % items.length; // Loop back to the start if going right
+            updateCarousel();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
